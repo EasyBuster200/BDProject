@@ -2,11 +2,10 @@
 CREATE TABLE Modelos (
   nome VARCHAR2(30) NOT NULL,
   marca VARCHAR2(30) NOT NULL,
-  nLugares SMALLINT NOT NULL,
   PRIMARY KEY (nome, marca)
 );
 
--- Create table 'Veiculos'
+-- Create table 'Veiculos' --? How to go from the ERD to Table form properly
 CREATE TABLE Veiculos (
   Matr VARCHAR2(6) PRIMARY KEY,
   nome VARCHAR2(30) NOT NULL,
@@ -65,9 +64,11 @@ CREATE TABLE Cartoes (
 CREATE TABLE Pedidos (
   idP NUMBER(10,0) PRIMARY KEY,
   valorTotal DECIMAL(4,2) NOT NULL,
-  tempo INT NOT NULL, --? How to savee time (s independentemente do formato local para atributos do tipo DATE)
+  tempo INT NOT NULL, --? How to save time (s independentemente do formato local para atributos do tipo DATE)
   destino VARCHAR2(30) NOT NULL
 );
+
+--?ADD CONSTRAINT ck_distinct_destination_origin CHECK (destination <> origin);
 
 -- Create table 'Viagem'
 CREATE TABLE Viagem (
@@ -119,14 +120,66 @@ CREATE SEQUENCE idArtigo
 START with 0000000000
 INCREMENT BY 1;
 
+--Modelos Carros -> 50
+insert into Modelos (nome, marca) values ('Discovery', 'Land Rover');
+insert into Modelos (nome, marca) values ('Ranger', 'Ford');
+insert into Modelos (nome, marca) values ('Prius', 'Toyota');
+insert into Modelos (nome, marca) values ('Express 2500', 'Chevrolet');
+insert into Modelos (nome, marca) values ('7 Series', 'BMW');
+insert into Modelos (nome, marca) values ('Mustang', 'Ford');
+insert into Modelos (nome, marca) values ('Sentra', 'Nissan');
+insert into Modelos (nome, marca) values ('CX-9', 'Mazda');
+insert into Modelos (nome, marca) values ('Crown Victoria', 'Ford');
+insert into Modelos (nome, marca) values ('LS', 'Lexus');
+insert into Modelos (nome, marca) values ('Optima', 'Kia');
+insert into Modelos (nome, marca) values ('S-Series', 'Saturn');
+insert into Modelos (nome, marca) values ('SM', 'Citroën');
+insert into Modelos (nome, marca) values ('X-90', 'Suzuki');
+insert into Modelos (nome, marca) values ('Ranger', 'Ford');
+insert into Modelos (nome, marca) values ('5 Series', 'BMW');
+insert into Modelos (nome, marca) values ('LS', 'Lexus');
+insert into Modelos (nome, marca) values ('MX-5', 'Mazda');
+insert into Modelos (nome, marca) values ('Cougar', 'Mercury');
+insert into Modelos (nome, marca) values ('Odyssey', 'Honda');
+insert into Modelos (nome, marca) values ('Boxster', 'Porsche');
+insert into Modelos (nome, marca) values ('Electra', 'Buick');
+insert into Modelos (nome, marca) values ('Cooper', 'MINI');
+insert into Modelos (nome, marca) values ('Storm', 'Geo');
+insert into Modelos (nome, marca) values ('626', 'Mazda');
+insert into Modelos (nome, marca) values ('Range Rover', 'Land Rover');
+insert into Modelos (nome, marca) values ('riolet', 'Audi');
+insert into Modelos (nome, marca) values ('Elantra', 'Hyundai');
+insert into Modelos (nome, marca) values ('Sentra', 'Nissan');
+insert into Modelos (nome, marca) values ('Pajero', 'Mitsubishi');
+insert into Modelos (nome, marca) values ('Element', 'Honda');
+insert into Modelos (nome, marca) values ('Neon', 'Dodge');
+insert into Modelos (nome, marca) values ('F250', 'Ford');
+insert into Modelos (nome, marca) values ('2500', 'Ram');
+insert into Modelos (nome, marca) values ('Grand Caravan', 'Dodge');
+insert into Modelos (nome, marca) values ('Ranger', 'Ford');
+insert into Modelos (nome, marca) values ('Ram 3500', 'Dodge');
+insert into Modelos (nome, marca) values ('S80', 'Volvo');
+insert into Modelos (nome, marca) values ('LS', 'Lexus');
+insert into Modelos (nome, marca) values ('TrailBlazer', 'Chevrolet');
+insert into Modelos (nome, marca) values ('Legacy', 'Subaru');
+insert into Modelos (nome, marca) values ('Savana 2500', 'GMC');
+insert into Modelos (nome, marca) values ('Accord', 'Honda');
+insert into Modelos (nome, marca) values ('GS', 'Lexus');
+insert into Modelos (nome, marca) values ('Explorer', 'Ford');
+insert into Modelos (nome, marca) values ('Sprinter', 'Dodge');
+insert into Modelos (nome, marca) values ('Five Hundred', 'Ford');
+insert into Modelos (nome, marca) values ('Metro', 'Geo');
+insert into Modelos (nome, marca) values ('Aviator', 'Lincoln');
+insert into Modelos (nome, marca) values ('Outlander', 'Mitsubishi');
+
+
+
+-- Veiculos
+--? How
+
 
 /* TODO: 
   Make sure that Carro e Mota são disjuntos
-  Create something similar to this for: idP, idRestr, IdMenu, idArtigo
-    create sequence seq_num_aluno
-    start with 60000
-    increment by 1;
-  
 */
 
 /* TODO: Restrições
@@ -134,4 +187,5 @@ INCREMENT BY 1;
   - A origem e destino de um pedido não pode ser igual
   - Nº de estrelas do condutor tem de ser entre 0-5 
   - Uma pessoa não pode pedir algo que n pertenca ao menu do restaurante onde o pedido foi feito
+  - Uma mota não pode fazer transporte de pessoas
 */
