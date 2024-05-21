@@ -1,176 +1,487 @@
 -- Create table 'Modelos'
-CREATE TABLE Modelos (
-  nome VARCHAR2(30) NOT NULL,
-  marca VARCHAR2(30) NOT NULL,
-  PRIMARY KEY (nome, marca)
+create table modelos (
+	nome  varchar2(30) not null,
+	marca varchar2(30) not null,
+	primary key ( nome,
+	              marca )
 );
 
 -- Create table 'Veiculos' --? How to go from the ERD to Table form properly
-CREATE TABLE Veiculos (
-  Matr VARCHAR2(6) PRIMARY KEY,
-  nome VARCHAR2(30) NOT NULL,
-  marca VARCHAR2(30) NOT NULL,
-  cor VARCHAR2(30) NOT NULL,
-  FOREIGN KEY (nome, marca) REFERENCES Modelos(nome, marca)
+--! Can be both ways
+create table veiculos (
+	matr  varchar2(6) primary key,
+	nome  varchar2(30) not null,
+	marca varchar2(30) not null,
+	cor   varchar2(30) not null,
+	foreign key ( nome,
+	              marca )
+		references modelos ( nome,
+		                     marca )
 );
 
 -- Create table 'Carros'
-CREATE TABLE Carros (
-  Matr VARCHAR2(6) PRIMARY KEY REFERENCES Veiculos(Matr),
-  nLugares SMALLINT NOT NULL
+create table carros (
+	matr     varchar2(6) primary key
+		references veiculos ( matr ),
+	nlugares smallint not null
 );
 
 -- Create table 'Motas'
-CREATE TABLE Motas (
-  Matr VARCHAR2(6) PRIMARY KEY REFERENCES Veiculos(Matr)  
+create table motas (
+	matr varchar2(6) primary key
+		references veiculos ( matr )
 );
 
 -- Create table 'Contas'
-CREATE TABLE Contas (
-  nTelefone VARCHAR2(14) PRIMARY KEY, -- +351 123456789
-  email VARCHAR2(30),
-  nome VARCHAR2(30)
+create table contas (
+	ntelefone varchar2(14) primary key, -- +351 123456789
+	email     varchar2(30),
+	nome      varchar2(30)
 );
 
 -- Create table 'Condutores'
-CREATE TABLE Condutores (
-  nTelefone VARCHAR2(14) PRIMARY KEY references Contas(nTelefone),
-  nCartaCond VARCHAR2(20) NOT NULL,
-  dataVal DATE NOT NULL,
-  nEstrelas SMALLINT,
-  FOREIGN KEY (idP) REFERENCES Pedidos(idP)
+create table condutores (
+	ntelefone  varchar2(14) primary key
+		references contas ( ntelefone ),
+	ncartacond varchar2(20) not null,
+	dataval    date not null,
+	nestrelas  smallint,
+	foreign key ( idp )
+		references pedidos ( idp )
 );
 
 -- Create table 'Clientes'
-CREATE TABLE Clientes (
-  nTelefone VARCHAR2(15) PRIMARY KEY references Contas(nTelefone),
-  FOREIGN KEY (idP) REFERENCES Pedidos(idP)
+create table clientes (
+	ntelefone varchar2(15) primary key
+		references contas ( ntelefone ),
+	foreign key ( idp )
+		references pedidos ( idp )
 );
 
 -- Create table 'utiliza'
-CREATE TABLE utiliza (
-  nTelefone VARCHAR2(14) NOT NULL references Contas(nTelefone) , --? References Contas ou Clientes
-  nCartao NUMBER(20,0) NOT NULL references Cartoes(nCartao),
-  PRIMARY KEY (nTelefone, nCartao)
+create table utiliza (
+	ntelefone varchar2(14) not null
+		references contas ( ntelefone ), --? References Contas ou Clientes
+	ncartao   number(20,0) not null
+		references cartoes ( ncartao ),
+	primary key ( ntelefone,
+	              ncartao )
 );
 
 -- Create table 'Cartoes'
-CREATE TABLE Cartoes (
-  nCartao NUMBER(20,0) PRIMARY KEY,
-  dataVal DATE NOT NULL
+create table cartoes (
+	ncartao number(20,0) primary key,
+	dataval date not null
 );
 
 -- Create table 'Pedidos'
-CREATE TABLE Pedidos (
-  idP NUMBER(10,0) PRIMARY KEY,
-  valorTotal DECIMAL(4,2) NOT NULL,
-  tempo INT NOT NULL, --? How to save time (s independentemente do formato local para atributos do tipo DATE)
-  destino VARCHAR2(30) NOT NULL
+create table pedidos (
+	idp        number(10,0) primary key,
+	valortotal decimal(4,2) not null,
+	tempo      int not null, --? How to save time (independentemente do formato local para atributos do tipo DATE)
+	destino    varchar2(30) not null
 );
 
 --?ADD CONSTRAINT ck_distinct_destination_origin CHECK (destination <> origin);
 
 -- Create table 'Viagem'
-CREATE TABLE Viagem (
-  idP NUMBER(10,0) NOT NULL primary KEY references Pedidos(idP),
-  origem VARCHAR2(30) NOT NULL
+create table viagem (
+	idp    number(10,0) not null primary key
+		references pedidos ( idp ),
+	origem varchar2(30) not null
 );
 
 -- Create table 'EntregaComida'
-CREATE TABLE EntregaComida (
-  idP NUMBER(10,0) NOT NULL primary key references Pedidos
+create table entregacomida (
+	idp number(10,0) not null primary key
+		references pedidos
 );
 
 -- Create table 'Restaurantes'
-CREATE TABLE Restaurantes (
-  idRestr NUMBER(5,0) PRIMARY KEY,
-  nome VARCHAR2(30) NOT NULL,
-  endereco VARCHAR2(30) NOT NULL,
-  FOREIGN KEY (idP) REFERENCES Pedidos(idP)
+create table restaurantes (
+	idrestr  number(5,0) primary key,
+	nome     varchar2(30) not null,
+	endereco varchar2(30) not null,
+	foreign key ( idp )
+		references pedidos ( idp )
 );
 
 -- Create table 'Menus'
-CREATE TABLE Menus (
-  idMenu NUMBER(5,0) PRIMARY KEY,
-  FOREIGN KEY (idRestr) REFERENCES Restaurantes(idRestr)
+create table menus (
+	idmenu number(5,0) primary key,
+	foreign key ( idrestr )
+		references restaurantes ( idrestr )
 );
 
 -- Create table 'Artigos'
-CREATE TABLE Artigos (
-  idArtigo NUMBER(10,0) PRIMARY KEY,
-  descricao VARCHAR2(30) NOT NULL,
-  preco DECIMAL(10,2) NOT NULL,
-  nome VARCHAR2(30) NOT NULL,
-  FOREIGN KEY (idMenu) REFERENCES Menus(idMenu)
+create table artigos (
+	idartigo  number(10,0) primary key,
+	descricao varchar2(30) not null,
+	preco     decimal(10,2) not null,
+	nome      varchar2(30) not null,
+	foreign key ( idmenu )
+		references menus ( idmenu )
 );
 
-CREATE SEQUENCE seq_idP
-start with 0000000000
-increment by 1;
+create sequence seq_idp start with 0000000000 increment by 1;
 
-CREATE SEQUENCE seq_idRestr 
-START WITH 00000
-INCREMENT by 1;
+create sequence seq_idrestr start with 00000 increment by 1;
 
-CREATE SEQUENCE seq_idMenu
-START with 00000
-INCREMENT by 1;
+create sequence seq_idmenu start with 00000 increment by 1;
 
-CREATE SEQUENCE idArtigo
-START with 0000000000
-INCREMENT BY 1;
+create sequence idartigo start with 0000000000 increment by 1;
 
 --Modelos Carros -> 50
-insert into Modelos (nome, marca) values ('Discovery', 'Land Rover');
-insert into Modelos (nome, marca) values ('Ranger', 'Ford');
-insert into Modelos (nome, marca) values ('Prius', 'Toyota');
-insert into Modelos (nome, marca) values ('Express 2500', 'Chevrolet');
-insert into Modelos (nome, marca) values ('7 Series', 'BMW');
-insert into Modelos (nome, marca) values ('Mustang', 'Ford');
-insert into Modelos (nome, marca) values ('Sentra', 'Nissan');
-insert into Modelos (nome, marca) values ('CX-9', 'Mazda');
-insert into Modelos (nome, marca) values ('Crown Victoria', 'Ford');
-insert into Modelos (nome, marca) values ('LS', 'Lexus');
-insert into Modelos (nome, marca) values ('Optima', 'Kia');
-insert into Modelos (nome, marca) values ('S-Series', 'Saturn');
-insert into Modelos (nome, marca) values ('SM', 'Citroën');
-insert into Modelos (nome, marca) values ('X-90', 'Suzuki');
-insert into Modelos (nome, marca) values ('Ranger', 'Ford');
-insert into Modelos (nome, marca) values ('5 Series', 'BMW');
-insert into Modelos (nome, marca) values ('LS', 'Lexus');
-insert into Modelos (nome, marca) values ('MX-5', 'Mazda');
-insert into Modelos (nome, marca) values ('Cougar', 'Mercury');
-insert into Modelos (nome, marca) values ('Odyssey', 'Honda');
-insert into Modelos (nome, marca) values ('Boxster', 'Porsche');
-insert into Modelos (nome, marca) values ('Electra', 'Buick');
-insert into Modelos (nome, marca) values ('Cooper', 'MINI');
-insert into Modelos (nome, marca) values ('Storm', 'Geo');
-insert into Modelos (nome, marca) values ('626', 'Mazda');
-insert into Modelos (nome, marca) values ('Range Rover', 'Land Rover');
-insert into Modelos (nome, marca) values ('riolet', 'Audi');
-insert into Modelos (nome, marca) values ('Elantra', 'Hyundai');
-insert into Modelos (nome, marca) values ('Sentra', 'Nissan');
-insert into Modelos (nome, marca) values ('Pajero', 'Mitsubishi');
-insert into Modelos (nome, marca) values ('Element', 'Honda');
-insert into Modelos (nome, marca) values ('Neon', 'Dodge');
-insert into Modelos (nome, marca) values ('F250', 'Ford');
-insert into Modelos (nome, marca) values ('2500', 'Ram');
-insert into Modelos (nome, marca) values ('Grand Caravan', 'Dodge');
-insert into Modelos (nome, marca) values ('Ranger', 'Ford');
-insert into Modelos (nome, marca) values ('Ram 3500', 'Dodge');
-insert into Modelos (nome, marca) values ('S80', 'Volvo');
-insert into Modelos (nome, marca) values ('LS', 'Lexus');
-insert into Modelos (nome, marca) values ('TrailBlazer', 'Chevrolet');
-insert into Modelos (nome, marca) values ('Legacy', 'Subaru');
-insert into Modelos (nome, marca) values ('Savana 2500', 'GMC');
-insert into Modelos (nome, marca) values ('Accord', 'Honda');
-insert into Modelos (nome, marca) values ('GS', 'Lexus');
-insert into Modelos (nome, marca) values ('Explorer', 'Ford');
-insert into Modelos (nome, marca) values ('Sprinter', 'Dodge');
-insert into Modelos (nome, marca) values ('Five Hundred', 'Ford');
-insert into Modelos (nome, marca) values ('Metro', 'Geo');
-insert into Modelos (nome, marca) values ('Aviator', 'Lincoln');
-insert into Modelos (nome, marca) values ('Outlander', 'Mitsubishi');
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Discovery',
+	'Land Rover'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Ranger',
+	'Ford'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Prius',
+	'Toyota'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Express 2500',
+	'Chevrolet'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'7 Series',
+	'BMW'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Mustang',
+	'Ford'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Sentra',
+	'Nissan'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'CX-9',
+	'Mazda'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Crown Victoria',
+	'Ford'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'LS',
+	'Lexus'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Optima',
+	'Kia'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'S-Series',
+	'Saturn'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'SM',
+	'Citroën'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'X-90',
+	'Suzuki'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Ranger',
+	'Ford'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'5 Series',
+	'BMW'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'LS',
+	'Lexus'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'MX-5',
+	'Mazda'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Cougar',
+	'Mercury'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Odyssey',
+	'Honda'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Boxster',
+	'Porsche'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Electra',
+	'Buick'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Cooper',
+	'MINI'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Storm',
+	'Geo'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'626',
+	'Mazda'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Range Rover',
+	'Land Rover'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'riolet',
+	'Audi'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Elantra',
+	'Hyundai'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Sentra',
+	'Nissan'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Pajero',
+	'Mitsubishi'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Element',
+	'Honda'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Neon',
+	'Dodge'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'F250',
+	'Ford'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'2500',
+	'Ram'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Grand Caravan',
+	'Dodge'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Ranger',
+	'Ford'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Ram 3500',
+	'Dodge'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'S80',
+	'Volvo'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'LS',
+	'Lexus'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'TrailBlazer',
+	'Chevrolet'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Legacy',
+	'Subaru'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Savana 2500',
+	'GMC'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Accord',
+	'Honda'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'GS',
+	'Lexus'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Explorer',
+	'Ford'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Sprinter',
+	'Dodge'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Five Hundred',
+	'Ford'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Metro',
+	'Geo'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Aviator',
+	'Lincoln'
+);
+insert into modelos (
+	nome,
+	marca
+) values (
+	'Outlander',
+	'Mitsubishi'
+);
 
 
 
@@ -180,6 +491,7 @@ insert into Modelos (nome, marca) values ('Outlander', 'Mitsubishi');
 
 /* TODO: 
   Make sure that Carro e Mota são disjuntos
+  Change the diagram so that only Carros has Cor as an attribute
 */
 
 /* TODO: Restrições
