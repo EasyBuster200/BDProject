@@ -1,42 +1,37 @@
 -- Create table 'Modelos'
 create table modelos (
-	nome  varchar2(30) not null,
+	nome varchar2(30) not null,
 	marca varchar2(30) not null,
-	primary key ( nome,
-	              marca )
+	primary key (nome, marca)
 );
 
 -- Create table 'Veiculos' --? How to go from the ERD to Table form properly
 --! Can be both ways
 create table veiculos (
-	matr  varchar2(6) primary key,
-	nome  varchar2(30) not null,
+	matr varchar2(6) primary key,
+	nome varchar2(30) not null,
 	marca varchar2(30) not null,
-	cor   varchar2(30) not null,
-	foreign key ( nome,
-	              marca )
-		references modelos ( nome,
-		                     marca )
-);
+	
+	foreign key (nome, marca) references modelos (nome, marca)
+)
 
 -- Create table 'Carros'
 create table carros (
-	matr     varchar2(6) primary key
-		references veiculos ( matr ),
+	matr varchar2(6) primary key references veiculos (matr),
 	nlugares smallint not null
+	cor varchar2(30) not null,
 );
 
 -- Create table 'Motas'
 create table motas (
-	matr varchar2(6) primary key
-		references veiculos ( matr )
+	matr varchar2(6) primary key references veiculos (matr)
 );
 
 -- Create table 'Contas'
 create table contas (
 	ntelefone varchar2(14) primary key, -- +351 123456789
-	email     varchar2(30),
-	nome      varchar2(30)
+	email varchar2(30),
+	nome varchar2(30)
 );
 
 -- Create table 'Condutores'
