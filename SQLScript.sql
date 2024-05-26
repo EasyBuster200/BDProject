@@ -11,15 +11,14 @@ create table veiculos (
 	matr varchar2(6) primary key,
 	nome varchar2(30) not null,
 	marca varchar2(30) not null,
-	
 	foreign key (nome, marca) references modelos (nome, marca)
 )
 
 -- Create table 'Carros'
 create table carros (
 	matr varchar2(6) primary key references veiculos (matr),
-	nlugares smallint not null
-	cor varchar2(30) not null,
+	nlugares smallint not null,
+	cor varchar2(30) not null
 );
 
 -- Create table 'Motas'
@@ -64,7 +63,8 @@ create table utiliza (
 
 -- Create table 'Cartoes'
 create table cartoes (
-	ncartao number(20,0) primary key,
+	ncartao number(16,0) primary key,
+	cvc NUMBER (16, 0) not NULL,
 	dataval DATE not null
 );
 
@@ -610,4 +610,5 @@ insert into modelos (
   - Nº de estrelas do condutor tem de ser entre 0-5 --> Done
   - Uma pessoa não pode pedir algo que n pertenca ao menu do restaurante onde o pedido foi feito
   - Uma mota não pode fazer transporte de pessoas
+	- Trigger adiciona modelos se não tiver na BD
 */
