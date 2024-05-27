@@ -35,27 +35,26 @@ create table contas (
 
 -- Create table 'Condutores'
 create table condutores (
-	ntelefone varchar2(14) primary key references contas (ntelefone),
+	y varchar2(14) primary key references contas (ntelefone),
 	ncartacond varchar2(20) not null,
 	dataval date not null,
 	nestrelas smallint, -- TEchnically if the driver hasnt been evaluated then it has no starts, therefore the value is null
 	foreign key (idp) references pedidos (idp)
 );
- 
 
 -- Create table 'Clientes'
 create table clientes (
 	ntelefone varchar2(15) primary key
-		references contas ( ntelefone ),
-	foreign key ( idp )
-		references pedidos ( idp )
+		references contas (ntelefone),
+	foreign key (idp)
+		references pedidos (idp)
 );
 
 -- Create table 'utiliza'
 create table utiliza (
 	ntelefone varchar2(14) not null
 		references contas ( ntelefone ), --? References Contas ou Clientes
-	ncartao   number(20,0) not null
+	ncartao number(20,0) not null
 		references cartoes ( ncartao ),
 	primary key ( ntelefone,
 	              ncartao )
@@ -103,8 +102,8 @@ create table restaurantes (
 -- Create table 'Menus'
 create table menus (
 	idmenu number(5,0) primary key,
-	foreign key ( idrestr )
-		references restaurantes ( idrestr )
+	foreign key (idrestr)
+		references restaurantes (idrestr)
 );
 
 -- Create table 'Artigos'
@@ -134,7 +133,7 @@ create sequence seq_idrestr start with 00000 increment by 1;
 
 create sequence seq_idmenu start with 00000 increment by 1;
 
-create sequence idartigo start with 0000000000 increment by 1;
+create sequence seq_idartigo start with 0000000000 increment by 1;
 
 --Condutores -> 100
 INSERT all
