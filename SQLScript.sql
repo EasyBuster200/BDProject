@@ -15,7 +15,7 @@ create table veiculos (
 	marca varchar2(30) not null,
 	foreign key (nome, marca) references modelos (nome, marca),
 	foreign KEY (telCondutor) references condutores (ntelefone)
-)
+);
 
 -- Create table 'carros'
 create table carros (
@@ -132,6 +132,5 @@ create sequence seq_idartigo start with 0000000000 increment by 1;
 
 
 /* TODO: Restrições
-  - Uma mota não pode fazer transporte de pessoas
 	- Trigger adiciona modelos se não tiver na BD
 */
