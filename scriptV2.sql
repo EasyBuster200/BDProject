@@ -1,3 +1,19 @@
+drop table modelos cascade constraints;
+drop table contas cascade constraints;
+drop table clientes cascade constraints;
+drop table cartoes cascade constraints;
+drop table utiliza cascade constraints;
+drop table condutores cascade constraints;
+drop table veiculos cascade constraints;
+drop table carros cascade constraints;
+drop table motas cascade constraints;
+drop table pedidos cascade constraints;
+drop table viagem cascade constraints;
+drop table entregacomida cascade constraints;
+drop table restaurantes cascade constraints;
+drop table menus cascade constraints;
+drop table artigos cascade constraints;
+
 -- Create table 'modelos'
 CREATE TABLE modelos (
     nome VARCHAR2(30) NOT NULL,
@@ -8,13 +24,13 @@ CREATE TABLE modelos (
 -- Create table 'contas'
 CREATE TABLE contas (
     email VARCHAR2(30) NOT NULL,
-    ntelefone NUMBER(14, 0) PRIMARY KEY,
+    ntelefone VARCHAR2(14) PRIMARY KEY,
     nome VARCHAR2(30) NOT NULL
 );
 
 -- Create table 'clientes'
 CREATE TABLE clientes (
-    ntelefone NUMBER(14, 0) PRIMARY KEY REFERENCES contas(ntelefone)
+    ntelefone VARCHAR2(14) PRIMARY KEY REFERENCES contas(ntelefone)
 );
 
 -- Create table 'cartoes'
@@ -26,7 +42,7 @@ CREATE TABLE cartoes (
 
 -- Create table 'utiliza'
 CREATE TABLE utiliza (
-    ntelefone NUMBER(14, 0) NOT NULL,
+    ntelefone VARCHAR2(14) NOT NULL,
     ncartao NUMBER(16, 0) NOT NULL,
     PRIMARY KEY (ntelefone, ncartao),
     FOREIGN KEY (ntelefone) REFERENCES clientes(ntelefone),
@@ -35,7 +51,7 @@ CREATE TABLE utiliza (
 
 -- Create table 'condutores'
 CREATE TABLE condutores (
-    ntelefone NUMBER(14, 0) PRIMARY KEY REFERENCES contas(ntelefone),
+    ntelefone VARCHAR2(14) PRIMARY KEY REFERENCES contas(ntelefone),
     ncartacond VARCHAR2(20) NOT NULL,
     dataval DATE NOT NULL,
     nestrelas SMALLINT,
@@ -48,7 +64,7 @@ CREATE TABLE veiculos (
     matr VARCHAR2(6) PRIMARY KEY,
     nome VARCHAR2(30) NOT NULL,
     marca VARCHAR2(30) NOT NULL,
-    telCondutor NUMBER(14, 0) NOT NULL,
+    telCondutor VARCHAR2(14) NOT NULL,
     FOREIGN KEY (nome, marca) REFERENCES modelos(nome, marca),
     FOREIGN KEY (telCondutor) REFERENCES condutores(ntelefone)
 );
@@ -71,16 +87,16 @@ CREATE TABLE pedidos (
     valortotal DECIMAL(4, 2) NOT NULL,
     tempo_in_sec INT NOT NULL,
     destino VARCHAR2(30) NOT NULL,
-    telCliente NUMBER(14, 0) NOT NULL,
-    telCondutor NUMBER(14, 0) NOT NULL,
+    telCliente VARCHAR2(14) NOT NULL,
+    telCondutor VARCHAR2(14) NOT NULL,
     FOREIGN KEY (telCliente) REFERENCES clientes(ntelefone),
     FOREIGN KEY (telCondutor) REFERENCES condutores(ntelefone)
 );
 
 -- Create table 'viagem'
 CREATE TABLE viagem (
-    idp NUMBER(10, 0) NOT NULL PRIMARY KEY REFERENCES pedidos(idp),
-    origem VARCHAR2(30) NOT NULL
+    origem VARCHAR2(30) NOT NULL,
+    idp NUMBER(10, 0) NOT NULL PRIMARY KEY REFERENCES pedidos(idp)
 );
 
 -- Create table 'entregacomida'
@@ -112,3 +128,58 @@ CREATE TABLE artigos (
     idmenu NUMBER(5, 0) NOT NULL,
     FOREIGN KEY (idmenu) REFERENCES menus(idmenu)
 );
+
+-- Constraints
+alter table condutores add constraint numEstr check(nestrelas >= 1 and nestrelas <=5);
+alter table condutores add constraint carta_valida check (dataval >= CURRENT_DATE);
+alter table carros add constraint num_lugar check (nlugares >= 3);
+alter table pedidos add constraint tempo_pos check (tempo > 0);
+alter table pedidos add constraint valor_pos check (valortotal > 0);
+alter table cartoes add constraint cartao_valido check (dataval >= CURRENT_DATE);
+alter table artigos add constraint preco_pos check (preco > 0);
+
+--Sequences 
+create sequence seq_idp start with 0000000000 increment by 1;
+
+create sequence seq_idrestr start with 00000 increment by 1;
+
+create sequence seq_idmenu start with 00000 increment by 1;
+
+create sequence seq_idartigo start with 0000000000 increment by 1;
+
+
+CREATE OR REPLACE TRIGGER no_assoc_card
+BEFORE INSERT OR UPDATE ON pedidos
+FOR EACH ROW
+DECLARE
+    cardCount NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO cardCount
+    FROM utiliza 
+    WHERE ntelefone = :new.telCliente;
+
+    IF cardCount = 0 THEN
+        raise_application_error(-20100, 'O cliente não tem um cartão associado');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER pertence_restr
+BEFORE INSERT OR UPDATE ON entregacomida
+FOR EACH ROW
+BEGIN
+  IF :new.idartigo IS NOT NULL THEN
+    SELECT 1 INTO FOUND
+    FROM artigos a
+    JOIN menus m ON a.idmenu = m.idmenu
+    WHERE a.idartigo = :new.idartigo
+      AND m.idrestr = :new.idrestr;
+
+    IF FOUND IS NULL THEN
+      RAISE_APPLICATION_ERROR(-20001, 'Artigo não pertence ao restaurante associado');
+    END IF;
+  END IF;
+END;
+/
+

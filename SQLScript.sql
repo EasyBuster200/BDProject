@@ -1,4 +1,4 @@
---TODO check if all the references have the right capitalization, and names
+
 
 -- Create table 'modelos'
 create table modelos (
@@ -130,20 +130,8 @@ create sequence seq_idmenu start with 00000 increment by 1;
 
 create sequence seq_idartigo start with 0000000000 increment by 1;
 
--- veiculos
---? How
-
-
-/* TODO: 
-  Make sure that Carro e Mota são disjuntos
-  Change the diagram so that only carros has Cor as an attribute
-*/
 
 /* TODO: Restrições
-  - Um cliente não pode fazer pedido se não tiver pelo menos um cartao associado --> Trigger
-  - A origem e destino de um pedido não pode ser igual --> Trigger
-  - Nº de estrelas do condutor tem de ser entre 0-5 --> Done
-  - Uma pessoa não pode pedir algo que n pertenca ao menu do restaurante onde o pedido foi feito
   - Uma mota não pode fazer transporte de pessoas
 	- Trigger adiciona modelos se não tiver na BD
 */
