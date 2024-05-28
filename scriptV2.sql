@@ -107,8 +107,8 @@ CREATE TABLE menus (
 -- Create table 'artigos'
 CREATE TABLE artigos (
     idartigo NUMBER(10, 0) PRIMARY KEY,
-    preco DECIMAL(4, 2) NOT NULL,
     nome VARCHAR2(30) NOT NULL,
+    preco DECIMAL(4, 2) NOT NULL,
     idmenu NUMBER(5, 0) NOT NULL,
     FOREIGN KEY (idmenu) REFERENCES menus(idmenu)
 );
