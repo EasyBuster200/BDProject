@@ -7,8 +7,8 @@ CREATE TABLE modelos (
 
 -- Create table 'contas'
 CREATE TABLE contas (
-    ntelefone NUMBER(14, 0) PRIMARY KEY,
     email VARCHAR2(30) NOT NULL,
+    ntelefone NUMBER(14, 0) PRIMARY KEY,
     nome VARCHAR2(30) NOT NULL
 );
 
