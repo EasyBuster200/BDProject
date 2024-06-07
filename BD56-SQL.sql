@@ -17,6 +17,7 @@ DROP SEQUENCE seq_idp;
 DROP SEQUENCE seq_idrestr;
 DROP SEQUENCE seq_idmenu;
 DROP SEQUENCE seq_idartigo;
+
 -- Create table 'modelos'
 CREATE TABLE modelos (
     nome VARCHAR2(100) NOT NULL,
@@ -67,9 +68,8 @@ CREATE TABLE condutores (
     dataval DATE NOT NULL,
     nestrelas SMALLINT,
     matr VARCHAR2(8) NOT NULL,
-    FOREIGN KEY (matr) REFERENCES veiculos(matr) --? Acho que temos de adicionar isto com um alter table, pois at this momnet a tabela veiculos nÃ£o existe
+    FOREIGN KEY (matr) REFERENCES veiculos(matr)
 );
-
 
 -- Create table 'carros'
 CREATE TABLE carros (
@@ -136,9 +136,7 @@ alter table pedidos add constraint tempo_pos check (tempo_in_sec > 0);
 alter table pedidos add constraint valor_pos check (valortotal > 0);
 alter table artigos add constraint preco_pos check (preco > 0);
 
-
 --Sequences 
-
 create sequence seq_idp start with 1000000000 increment by 1;
 
 create sequence seq_idrestr start with 10000 increment by 1;
@@ -205,8 +203,6 @@ BEGIN
   END IF;
 END;
 /
-
---!Temos de verificar a ordem, para inserir as coisas
 
 -- Criar Modelos carros
 insert all
